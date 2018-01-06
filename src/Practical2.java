@@ -40,9 +40,8 @@ public class Practical2 {
 		}
 
 		int iterations =0;
-		while (!draw()){
+		while (!draw())
 			iterations++;
-		}
 
 		System.out.println("n of iterations: " + iterations);
 	}
@@ -81,8 +80,8 @@ public class Practical2 {
 
 		int[] tmp = new int[100];
 		int pointer =0;
-		for(int i=0; i<sortedFitness.length; i++){
-			int quantity = Math.round(sortedFitness[i][1]/totalFit * 100);
+		for(int i=0; i<selected.size(); i++){
+			int quantity = Math.round(selected.get(i)[1]/totalFit * 100);
 			for(int j=0; j< quantity; j++)
 				tmp[j + pointer] = i; // write the index in the tmp array
 			pointer += quantity;
@@ -90,13 +89,13 @@ public class Practical2 {
 		//now i select two random number between 0 and 99 in tmp
 		//random.nextInt(max - min + 1) + min
 		Random rnd = new Random();
-		int first = rnd.nextInt(100);
-		int second = rnd.nextInt(100);
+		int first = tmp[rnd.nextInt(100)];
+		int second = tmp[rnd.nextInt(100)];
 
 		//CROSSOVER AND MUTATION
 		String son = generateSon(population.get(first).chromosome,
 				population.get(second).chromosome);
-		//System.out.println("son " + son);
+		System.out.println("son " + son);
 
 		population.add(new Individual(son.toCharArray()));
 	}
@@ -111,7 +110,7 @@ public class Practical2 {
 		}
 
 		// mutation
-		if(Math.random() < 0.02){
+		if(Math.random() <= mutationRate){
 			Random rnd = new Random();
 			son[rnd.nextInt(son.length)] = genChars(1)[0];
 		}
@@ -136,7 +135,7 @@ public class Practical2 {
 					c++;
 			}
 			fitness[i][1] = c;
-			System.out.println("c: " +c);
+			//System.out.println("c: " +c);
 		}
 
 		//sort by fitness while keeping the ids
