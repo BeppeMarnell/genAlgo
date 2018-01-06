@@ -1,18 +1,8 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Some very basic stuff to get you started. It shows basically how each
  * chromosome is built.
- * 
- * @author Jo Stevens
- * @version 1.0, 14 Nov 2008
- * 
- * @author Alard Roebroeck
- * @version 1.1, 12 Dec 2012
- * ciOa
  */
 
 public class Practical2 {
@@ -40,8 +30,7 @@ public class Practical2 {
 		}
 
 		int iterations =0;
-		while (!draw())
-			iterations++;
+		draw();
 
 		System.out.println("n of iterations: " + iterations);
 	}
@@ -50,7 +39,7 @@ public class Practical2 {
 	public static boolean draw(){
 
 		//SELECTION
-		int[][] sortedFitn = calcFitness(population).clone();
+		int[][] sortedFitn = calcFitness(population);
 		//go out the loop when the fitness of the first is == Target.length
 		if(sortedFitn[0][1]== TARGET.length()) return true;
 
@@ -71,6 +60,7 @@ public class Practical2 {
 				totalFit += sortedFitness[i][1];
 			}
 		}
+		//System.out.println("first fit: "+ selected.get(0)[0] +" " + selected.get(0)[1]);
 
 		// 4 strings 1f= 2 2f= 5 3f=6 4f =1  tf = 14
 		// 2/14 *100 = 14
@@ -80,22 +70,26 @@ public class Practical2 {
 
 		int[] tmp = new int[100];
 		int pointer =0;
+
 		for(int i=0; i<selected.size(); i++){
 			int quantity = Math.round(selected.get(i)[1]/totalFit * 100);
+
 			for(int j=0; j< quantity; j++)
 				tmp[j + pointer] = i; // write the index in the tmp array
+
+
 			pointer += quantity;
 		}
 		//now i select two random number between 0 and 99 in tmp
 		//random.nextInt(max - min + 1) + min
-		Random rnd = new Random();
-		int first = tmp[rnd.nextInt(100)];
-		int second = tmp[rnd.nextInt(100)];
+		//int first = tmp[generator.nextInt(100)];
+		int first = tmp[generator.nextInt(100)];
+		int second = tmp[generator.nextInt(100)];
 
 		//CROSSOVER AND MUTATION
 		String son = generateSon(population.get(first).chromosome,
 				population.get(second).chromosome);
-		System.out.println("son " + son);
+		System.out.println("son " + son + " par: "+first + ", " +second );
 
 		population.add(new Individual(son.toCharArray()));
 	}
@@ -111,8 +105,7 @@ public class Practical2 {
 
 		// mutation
 		if(Math.random() <= mutationRate){
-			Random rnd = new Random();
-			son[rnd.nextInt(son.length)] = genChars(1)[0];
+			son[generator.nextInt(son.length)] = genChars(1)[0];
 		}
 
 		StringBuilder builder = new StringBuilder();
@@ -135,20 +128,23 @@ public class Practical2 {
 					c++;
 			}
 			fitness[i][1] = c;
-			//System.out.println("c: " +c);
+			//System.out.println("id "+i + " c: " +c);
 		}
+
 
 		//sort by fitness while keeping the ids
 		Arrays.sort(fitness, Comparator.comparingInt(arr -> arr[1]));
 
-		/**
-		 * Arrays.sort(temp, new Comparator<int[]>() {
-		@Override
-		public int compare(int[] o1, int[] o2) {
-		return Integer.compare(o2[1], o1[1]);
+		// invert the matrix
+		ArrayList<int[]> tmp =  new ArrayList<>();
+		for (int i= 0; i< population.size(); i++)
+			tmp.add(new int[]{i, fitness[i][1]});
+
+		Collections.reverse(tmp);
+		for (int i= 0; i< population.size(); i++) {
+			fitness[i][0] = tmp.get(i)[0];
+			fitness[i][1] = tmp.get(i)[1];
 		}
-		});
-		 */
 
 		return fitness;
 	}
