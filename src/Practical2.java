@@ -12,7 +12,7 @@ import java.util.Random;
  * 
  * @author Alard Roebroeck
  * @version 1.1, 12 Dec 2012
- *
+ * ciO
  */
 
 public class Practical2 {
