@@ -1,14 +1,19 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Random;
 
 /**
  * Some very basic stuff to get you started. It shows basically how each
  * chromosome is built.
+ *
+ * HELLO WORLD
  */
 
 public class Practical2 {
 
 	static final String TARGET = "HELLO WORLD";
-	static double mutationRate = 0.01;
+	static double mutationRate = 0.2;
 
 	static char[] alphabet = new char[27];
 	static ArrayList<Individual> population;
@@ -29,10 +34,16 @@ public class Practical2 {
 			System.out.println("n: " +i + " " +population.get(i).genoToPhenotype());
 		}
 
-		int iterations =0;
-		draw();
+		final long startTime = System.nanoTime();
 
-		System.out.println("n of iterations: " + iterations);
+
+		int iterations =0;
+		while (!draw())
+			iterations++;
+
+		final double duration = (double)(System.nanoTime() - startTime)/1000000000;
+
+		System.out.println("n of iterations: " + iterations + " time passed: " + duration +" seconds");
 	}
 
 	//Method to attuate the genethic algorithm
@@ -41,7 +52,7 @@ public class Practical2 {
 		//SELECTION
 		int[][] sortedFitn = calcFitness(population);
 		//go out the loop when the fitness of the first is == Target.length
-		if(sortedFitn[0][1]== TARGET.length()) return true;
+		if(sortedFitn[sortedFitn.length-1][1] == TARGET.length()) return true;
 
 		//REPRODUCTION
 		reproduCe(sortedFitn);
@@ -51,40 +62,20 @@ public class Practical2 {
 
 	static public void reproduCe(int[][] sortedFitness){
 		// SELECT PARENTS
-		int totalFit = 0;
 		ArrayList<int[]> selected = new ArrayList<>();
 
-		for(int i=0; i<sortedFitness.length; i++){
-			if(sortedFitness[i][1]>=1) {
-				selected.add(new int[]{i, sortedFitness[i][1]});
-				totalFit += sortedFitness[i][1];
-			}
-		}
-		//System.out.println("first fit: "+ selected.get(0)[0] +" " + selected.get(0)[1]);
+		for(int i=0; i<sortedFitness.length; i++)
+			if (sortedFitness[i][1] >= 1)
+				selected.add(new int[]{sortedFitness[i][0], sortedFitness[i][1]});
 
-		// 4 strings 1f= 2 2f= 5 3f=6 4f =1  tf = 14
-		// 2/14 *100 = 14
-		// 5/14 *100 = 36
-		// 6/14 *100 = 43
-		// 1/14 *100 = 7
-
-		int[] tmp = new int[100];
-		int pointer =0;
-
-		for(int i=0; i<selected.size(); i++){
-			int quantity = Math.round(selected.get(i)[1]/totalFit * 100);
-
-			for(int j=0; j< quantity; j++)
-				tmp[j + pointer] = i; // write the index in the tmp array
-
-
-			pointer += quantity;
-		}
 		//now i select two random number between 0 and 99 in tmp
 		//random.nextInt(max - min + 1) + min
-		//int first = tmp[generator.nextInt(100)];
-		int first = tmp[generator.nextInt(100)];
-		int second = tmp[generator.nextInt(100)];
+
+		//int first = selected.get(generator.nextInt(selected.size()))[0];
+		//int second = selected.get(generator.nextInt(selected.size()))[0];
+
+		int first = selected.get(selected.size()-2)[0];
+		int second = selected.get(selected.size()-1)[0];
 
 		//CROSSOVER AND MUTATION
 		String son = generateSon(population.get(first).chromosome,
@@ -118,7 +109,7 @@ public class Practical2 {
 		int[][] fitness = new int[population.size()][2];
 
 		//create the id array
-		for(int i=0; i< fitness.length; i++){
+		for(int i=0; i< population.size(); i++){
 			fitness[i][0] = i ;
 
 			//calculate the fitness of the population array and put into fitness
@@ -128,23 +119,12 @@ public class Practical2 {
 					c++;
 			}
 			fitness[i][1] = c;
-			//System.out.println("id "+i + " c: " +c);
+			//System.out.println("Fid "+i + " f: " +c);
 		}
 
 
 		//sort by fitness while keeping the ids
 		Arrays.sort(fitness, Comparator.comparingInt(arr -> arr[1]));
-
-		// invert the matrix
-		ArrayList<int[]> tmp =  new ArrayList<>();
-		for (int i= 0; i< population.size(); i++)
-			tmp.add(new int[]{i, fitness[i][1]});
-
-		Collections.reverse(tmp);
-		for (int i= 0; i< population.size(); i++) {
-			fitness[i][0] = tmp.get(i)[0];
-			fitness[i][1] = tmp.get(i)[1];
-		}
 
 		return fitness;
 	}
