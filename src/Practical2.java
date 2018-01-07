@@ -31,7 +31,7 @@ public class Practical2 {
 		//INITIALIZE THE ALFABETH AND THE INITIAL POPULATION
 		initialize(popSize, TARGET.length());
 
-		// What does your population look like?
+		// WHAT THE POPULATION LOOK LIKE?
 		for (int i = 0; i < population.size(); i++) {
 			System.out.println("n: " +i + " " +population.get(i).genoToPhenotype());
 		}
@@ -79,15 +79,17 @@ public class Practical2 {
 		int second = selected.get(selected.size()-1)[0];
 
 		//CROSSOVER AND MUTATION
-		String son = generateSon(population.get(first).chromosome,
-				population.get(second).chromosome);
-		System.out.println("son " + son + " par: "+first + ", " +second );
+		char[] son = generateSon(population.get(first).chromosome, population.get(second).chromosome);
 
-		population.add(new Individual(son.toCharArray()));
+		population.add(new Individual(son));
+
+		//PRINT OUT THE LAST SON GENERATED
+		System.out.println("son " + population.get(population.size()-1).genoToPhenotype()
+				+ " par: "+first + ", " +second );
 	}
 
-	static public String generateSon(char[] f1, char[] f2){
-		// crossover
+	static public char[] generateSon(char[] f1, char[] f2){
+		// CROSSOVER
 		char[] son = new char[TARGET.length()];
 		int middle = Math.round(TARGET.length()/2);
 		for (int i=0; i< TARGET.length(); i++){
@@ -95,14 +97,11 @@ public class Practical2 {
 			else son[i] = f2[i];
 		}
 
-		// mutation
-		if(Math.random() <= mutationRate){
+		// MUTATION
+		if(Math.random() <= mutationRate)
 			son[generator.nextInt(son.length)] = genChars(1)[0];
-		}
 
-		StringBuilder builder = new StringBuilder();
-		builder.append(son);
-		return builder.toString();
+		return son;
 	}
 
 	//function to calculate the fitness
