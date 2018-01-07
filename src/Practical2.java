@@ -17,7 +17,8 @@ import java.util.Random;
 public class Practical2 {
 
 	static final String TARGET = "HELLO WORLD";
-	static double mutationRate = 0.2;
+	static final double mutationRate = 0.2;
+	static final int popSize = 100;
 
 	static char[] alphabet = new char[27];
 	static ArrayList<Individual> population;
@@ -26,27 +27,23 @@ public class Practical2 {
 
 	//MAIN VOID THAT STARTS ALL
 	public static void main(String[] args) {
-		int popSize = 100;
-		//generate the alphabet to use to generate the population
-		genAlfabeth();
-		//generate initial popolation
-		genPop(popSize, TARGET.length());
 
+		//INITIALIZE THE ALFABETH AND THE INITIAL POPULATION
+		initialize(popSize, TARGET.length());
 
 		// What does your population look like?
 		for (int i = 0; i < population.size(); i++) {
 			System.out.println("n: " +i + " " +population.get(i).genoToPhenotype());
 		}
 
+		// CALCULATE TIME FROM THE START TO THE END
 		final long startTime = System.nanoTime();
-
 
 		int iterations =0;
 		while (!draw())
 			iterations++;
 
 		final double duration = (double)(System.nanoTime() - startTime)/1000000000;
-
 		System.out.println("n of iterations: " + iterations + " ,time passed: " + duration +" seconds");
 	}
 
@@ -126,22 +123,24 @@ public class Practical2 {
 			//System.out.println("Fid "+i + " f: " +c);
 		}
 
+		/*
+		for (Individual i : population) {
+			if(i.fitness == 1000000){
+				//this means i have to calculate its fitness
+				//calculate the fitness of the population array and put into fitness
+				int c=0;
+				for(int j=0; j<TARGET.length(); j++){
+					if(i.getChromosome()[j] == TARGET.charAt(j))
+						c++;
+				}
+				i.fitness = c;
+			}
+		}*/
 
 		//sort by fitness while keeping the ids
 		Arrays.sort(fitness, Comparator.comparingInt(arr -> arr[1]));
 
 		return fitness;
-	}
-
-	//FIRST STATE POP GENERATION / CHARACTER CREATION
-	static public void genPop(int size, int targetSize){
-		population = new ArrayList<>();
-
-		// we initialize the population with random characters
-		for (int i = 0; i < size; i++) {
-			population.add(new Individual(genChars(targetSize)));
-		}
-
 	}
 
 	static public char[] genChars(int targetSize){
@@ -153,10 +152,19 @@ public class Practical2 {
 		return tempChromosome;
 	}
 
-	static private void genAlfabeth(){
+	static private void initialize(int size, int targetSize){
+		//GENERATE THE ALFABETH
 		for (char c = 'A'; c <= 'Z'; c++) {
 			alphabet[c - 'A'] = c;
 		}
 		alphabet[26] = ' ';
+
+		//GENERATE THE INITIAL POPULATION
+		population = new ArrayList<>();
+
+		// we initialize the population with random characters
+		for (int i = 0; i < size; i++) {
+			population.add(new Individual(genChars(targetSize)));
+		}
 	}
 }

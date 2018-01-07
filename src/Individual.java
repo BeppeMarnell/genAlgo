@@ -2,10 +2,11 @@
 public class Individual {
 	
 	char[] chromosome;
-	double fitness;
+	int fitness;
 	
 	public Individual(char[] chromosome) {
 		this.chromosome = chromosome;
+		//this.fitness = 1000000;
 		this.fitness = 0;
 	}
 
@@ -18,11 +19,11 @@ public class Individual {
 		this.chromosome = chromosome;
 	}
 
-	public double getFitness() {
+	public int getFitness() {
 		return fitness;
 	}
 
-	public void setFitness(double fitness) {
+	public void setFitness(int fitness) {
 		this.fitness = fitness;
 	}
 	
