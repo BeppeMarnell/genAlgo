@@ -1,2 +1,2 @@
 # SIMPLE GENETIC
-Genetic Algorithm Beppe
+Genetic Algorithm by Beppe Marinelli
