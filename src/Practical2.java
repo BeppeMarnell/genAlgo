@@ -7,7 +7,11 @@ import java.util.Random;
  * Some very basic stuff to get you started. It shows basically how each
  * chromosome is built.
  *
- * HELLO WORLD
+ * THIS VERSION IS STILL KINDA MESSY
+ * BUT THI GENETIC ALGORITHM HAS BEEN CREATED BY ME
+ * JUST WITH KNOWLEDGE AND NOT LOOKING AT ANY CODE
+ *
+ * Credits to Giuseppe(Beppe) Marinelli
  */
 
 public class Practical2 {
