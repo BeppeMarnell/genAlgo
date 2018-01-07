@@ -43,7 +43,7 @@ public class Practical2 {
 
 		final double duration = (double)(System.nanoTime() - startTime)/1000000000;
 
-		System.out.println("n of iterations: " + iterations + " time passed: " + duration +" seconds");
+		System.out.println("n of iterations: " + iterations + " ,time passed: " + duration +" seconds");
 	}
 
 	//Method to attuate the genethic algorithm
