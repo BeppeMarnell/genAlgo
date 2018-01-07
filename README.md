@@ -1,2 +1,2 @@
 # A
-Genetic Algorithm Beppe
+Genetic Algorithm by Beppe
