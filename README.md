@@ -1,2 +1,2 @@
-# A
+# SIMPLE GENETIC
 Genetic Algorithm Beppe
