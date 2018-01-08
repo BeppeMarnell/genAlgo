@@ -17,7 +17,7 @@ import java.util.Random;
 public class Practical2 {
 
 	static final String TARGET = "HELLO WORLD";
-	static final double mutationRate = 0.2;
+	static final double mutationRate = 0.5;
 	static final int popSize = 100;
 
 	static char[] alphabet = new char[27];
@@ -69,14 +69,14 @@ public class Practical2 {
 			if (sortedFitness[i][1] >= 1)
 				selected.add(new int[]{sortedFitness[i][0], sortedFitness[i][1]});
 
-		//now i select two random number between 0 and 99 in tmp
 		//random.nextInt(max - min + 1) + min
+		//TOURNAMENT SELECTION
+
+		int first = selected.get(selected.size()-1)[0];
+		int second = selected.get(selected.size()-2)[0];
 
 		//int first = selected.get(generator.nextInt(selected.size()))[0];
 		//int second = selected.get(generator.nextInt(selected.size()))[0];
-
-		int first = selected.get(selected.size()-2)[0];
-		int second = selected.get(selected.size()-1)[0];
 
 		//CROSSOVER AND MUTATION
 		char[] son = generateSon(population.get(first).chromosome, population.get(second).chromosome);
@@ -85,7 +85,7 @@ public class Practical2 {
 
 		//PRINT OUT THE LAST SON GENERATED
 		System.out.println("son " + population.get(population.size()-1).genoToPhenotype()
-				+ " par: "+first + ", " +second );
+				+ " parents: "+first + ", " +second );
 	}
 
 	static public char[] generateSon(char[] f1, char[] f2){
