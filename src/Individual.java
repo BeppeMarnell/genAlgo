@@ -2,12 +2,13 @@
 public class Individual {
 	
 	char[] chromosome;
-	int fitness;
+	private int fitness;
+	boolean initializated;
 	
 	public Individual(char[] chromosome) {
 		this.chromosome = chromosome;
-		//this.fitness = 1000000;
 		this.fitness = 0;
+		this.initializated = false;
 	}
 
 
@@ -24,7 +25,9 @@ public class Individual {
 	}
 
 	public void setFitness(int fitness) {
+
 		this.fitness = fitness;
+		this.initializated = true;
 	}
 	
 	public String genoToPhenotype() {

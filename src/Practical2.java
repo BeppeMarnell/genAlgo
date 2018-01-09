@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Some very basic stuff to get you started. It shows basically how each
@@ -12,13 +9,14 @@ import java.util.Random;
  * JUST WITH KNOWLEDGE AND NOT LOOKING AT ANY CODE
  *
  * Credits to Giuseppe(Beppe) Marinelli
+ *
  */
 
 public class Practical2 {
 
 	static final String TARGET = "HELLO WORLD";
 	static final double mutationRate = 0.5;
-	static final int popSize = 100;
+	static final int popSize = 1000;
 
 	static char[] alphabet = new char[27];
 	static ArrayList<Individual> population;
@@ -36,47 +34,55 @@ public class Practical2 {
 			System.out.println("n: " +i + " " +population.get(i).genoToPhenotype());
 		}
 
+		int iterations =0;
+
 		// CALCULATE TIME FROM THE START TO THE END
 		final long startTime = System.nanoTime();
 
-		int iterations =0;
 		while (!draw())
 			iterations++;
 
 		final double duration = (double)(System.nanoTime() - startTime)/1000000000;
 		System.out.println("n of iterations: " + iterations + " ,time passed: " + duration +" seconds");
+
 	}
 
 	//Method to attuate the genethic algorithm
 	public static boolean draw(){
 
 		//SELECTION
-		int[][] sortedFitn = calcFitness(population);
-		//go out the loop when the fitness of the first is == Target.length
-		if(sortedFitn[sortedFitn.length-1][1] == TARGET.length()) return true;
+		if(calcFitness(population))return true;
 
 		//REPRODUCTION
-		reproduCe(sortedFitn);
+		reproduCe();
 
 		return false;
 	}
 
-	static public void reproduCe(int[][] sortedFitness){
+	static public void reproduCe(){
 		// SELECT PARENTS
 		ArrayList<int[]> selected = new ArrayList<>();
 
-		for(int i=0; i<sortedFitness.length; i++)
-			if (sortedFitness[i][1] >= 1)
-				selected.add(new int[]{sortedFitness[i][0], sortedFitness[i][1]});
+		for(int i=0; i<population.size(); i++)
+			if (population.get(i).getFitness() >= 1)
+				selected.add(new int[]{i, population.get(i).getFitness()});
+
+		//Sorting the array list selected referring to the highest fitness
+		Collections.sort(selected, new Comparator<int[]>() {
+			@Override
+			public int compare(int[] z1, int[] z2) {
+				if (z1[1] > z2[1])
+					return 1;
+				if (z1[1] < z2[1])
+					return -1;
+				return 0;
+			}
+		});
 
 		//random.nextInt(max - min + 1) + min
-		//TOURNAMENT SELECTION
 
 		int first = selected.get(selected.size()-1)[0];
 		int second = selected.get(selected.size()-2)[0];
-
-		//int first = selected.get(generator.nextInt(selected.size()))[0];
-		//int second = selected.get(generator.nextInt(selected.size()))[0];
 
 		//CROSSOVER AND MUTATION
 		char[] son = generateSon(population.get(first).chromosome, population.get(second).chromosome);
@@ -105,26 +111,11 @@ public class Practical2 {
 	}
 
 	//function to calculate the fitness
-	static public int[][] calcFitness(ArrayList<Individual> population){
-		int[][] fitness = new int[population.size()][2];
+	static public boolean calcFitness(ArrayList<Individual> population){
+		boolean stopCount = false;
 
-		//create the id array
-		for(int i=0; i< population.size(); i++){
-			fitness[i][0] = i ;
-
-			//calculate the fitness of the population array and put into fitness
-			int c=0;
-			for(int j=0; j<TARGET.length(); j++){
-				if(population.get(i).getChromosome()[j] == TARGET.charAt(j))
-					c++;
-			}
-			fitness[i][1] = c;
-			//System.out.println("Fid "+i + " f: " +c);
-		}
-
-		/*
 		for (Individual i : population) {
-			if(i.fitness == 1000000){
+			if(i.initializated == false){
 				//this means i have to calculate its fitness
 				//calculate the fitness of the population array and put into fitness
 				int c=0;
@@ -132,14 +123,13 @@ public class Practical2 {
 					if(i.getChromosome()[j] == TARGET.charAt(j))
 						c++;
 				}
-				i.fitness = c;
+				i.setFitness(c);
+				// set the stop count going out the loop when the fitness of the first is == Target.length
+				if(c == TARGET.length()) stopCount = true;
 			}
-		}*/
+		}
 
-		//sort by fitness while keeping the ids
-		Arrays.sort(fitness, Comparator.comparingInt(arr -> arr[1]));
-
-		return fitness;
+		return stopCount;
 	}
 
 	static public char[] genChars(int targetSize){
