@@ -10,6 +10,10 @@ import java.util.*;
  *
  * Credits to Giuseppe(Beppe) Marinelli
  *
+ * best result :
+ * pop size = 100
+ * mutation rate = 0.5
+ * n of iterations: 59 ,time passed: 0.051656752 seconds
  */
 
 public class Practical2 {
