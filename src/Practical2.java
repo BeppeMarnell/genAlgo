@@ -16,7 +16,7 @@ public class Practical2 {
 
 	static final String TARGET = "HELLO WORLD";
 	static final double mutationRate = 0.5;
-	static final int popSize = 1000;
+	static final int popSize = 100;
 
 	static char[] alphabet = new char[27];
 	static ArrayList<Individual> population;
@@ -78,14 +78,33 @@ public class Practical2 {
 				return 0;
 			}
 		});
-
 		//random.nextInt(max - min + 1) + min
 
 		int first = selected.get(selected.size()-1)[0];
 		int second = selected.get(selected.size()-2)[0];
 
 		//CROSSOVER AND MUTATION
-		char[] son = generateSon(population.get(first).chromosome, population.get(second).chromosome);
+		char[] son = generateSon(population.get(first).getChromosome(), population.get(second).getChromosome());
+
+		//extended search for optimization result
+		int fSon = fastFitness(son);//
+
+		int max = Math.max(fastFitness(population.get(first).getChromosome()),
+				fastFitness(population.get(second).getChromosome()));
+
+		int count = 1;
+		while (fSon < max){
+			//re-take the second
+			second = selected.get(selected.size()-(2+count))[0];
+			//generate another son
+			son = generateSon(population.get(first).getChromosome(), population.get(second).getChromosome());
+			//calcualate this fitness' son
+			fSon = fastFitness(son);
+			//calculate again the maximum
+			max = Math.max(fastFitness(population.get(first).getChromosome()),
+					fastFitness(population.get(second).getChromosome()));
+		}
+
 
 		population.add(new Individual(son));
 
@@ -104,8 +123,10 @@ public class Practical2 {
 		}
 
 		// MUTATION
-		if(Math.random() <= mutationRate)
-			son[generator.nextInt(son.length)] = genChars(1)[0];
+		for(int i=0; i<TARGET.length(); i++)
+			if(Math.random() <= mutationRate)
+				son[i] = genChars(1)[0];
+
 
 		return son;
 	}
@@ -118,18 +139,23 @@ public class Practical2 {
 			if(i.initializated == false){
 				//this means i have to calculate its fitness
 				//calculate the fitness of the population array and put into fitness
-				int c=0;
-				for(int j=0; j<TARGET.length(); j++){
-					if(i.getChromosome()[j] == TARGET.charAt(j))
-						c++;
-				}
-				i.setFitness(c);
+				int f = fastFitness(i.getChromosome());
+				i.setFitness(f);
 				// set the stop count going out the loop when the fitness of the first is == Target.length
-				if(c == TARGET.length()) stopCount = true;
+				if(f == TARGET.length()) stopCount = true;
 			}
 		}
 
 		return stopCount;
+	}
+
+	static private int fastFitness(char[] dna){
+		int c=0;
+		for(int j=0; j<TARGET.length(); j++){
+			if(dna[j] == TARGET.charAt(j))
+				c++;
+		}
+		return c;
 	}
 
 	static public char[] genChars(int targetSize){

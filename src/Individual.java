@@ -1,7 +1,7 @@
 
 public class Individual {
 	
-	char[] chromosome;
+	private char[] chromosome;
 	private int fitness;
 	boolean initializated;
 	
