@@ -11,7 +11,6 @@ public class Individual {
 		this.initializated = false;
 	}
 
-
 	public char[] getChromosome() {
 		return chromosome;
 	}
@@ -43,7 +42,4 @@ public class Individual {
 		}
 		return new Individual(chromClone);
 	}
-	
-
-
 }
